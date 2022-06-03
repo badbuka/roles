@@ -1,0 +1,97 @@
+---
+# tasks file for mywg
+- name: "install wireguard repos"
+  dnf:
+    name: 
+     - elrepo-release
+     - epel-release
+    update_cache: yes
+    state: present
+
+- name: "install wireguard"
+  dnf:
+    name: 
+     - kmod-wireguard 
+     - wireguard-tools
+    update_cache: yes
+    state: present
+
+- name: "install additional packages"
+  dnf:
+    name: 
+     - python3-pip
+     - python3-firewall
+     - firewalld
+    update_cache: yes
+    state: present
+
+- name: "check keys"
+  stat:
+    path: /etc/wireguard/wg0.key
+  register: wg0_key_stat
+
+- block:
+
+  - name: "generate wireguard keys"
+    shell: "wg genkey | tee /etc/wireguard/wg0.key"
+
+  - name: "generate wireguard public key"
+    shell: "wg pubkey < /etc/wireguard/wg0.key | tee /etc/wireguard/wg0.pub"
+
+  when: not wg0_key_stat.stat.exists
+
+- name: "register private key content"
+  shell: cat /etc/wireguard/wg0.key
+  register: wg_key
+
+- name: "register public key content"
+  shell: cat /etc/wireguard/wg0.pub
+  register: wg_pubkey
+
+- name: "copy wireguard config"
+  template:
+    src: "etc/wireguard/wg0.conf.j2"
+    dest: "/etc/wireguard/wg0.conf"
+    owner: root
+    group: root
+    mode: 0600
+  notify:
+    - "reload wireguard"
+
+- name: "enable ip forwarding"
+  sysctl:
+    key: net.ipv4.ip_forward
+    value: "1"
+    state: present
+
+- name: "add wireguard interface"
+  systemd:
+    name: wg-quick@wg0.service
+    enabled: yes
+    state: started
+
+- name: "start and enable firewalld"
+  systemd:
+    name: firewalld.service
+    enabled: yes
+    state: started
+  
+- name: "open port on firewall"
+  firewalld:
+    port: 465/udp
+    zone: public
+    state: enabled
+    permanent: yes
+    immediate: yes
+
+- name: "masquerade"
+  firewalld:
+    rich_rule: 'rule family="ipv4" source address="10.0.0.0/8" masquerade'
+    zone: public
+    state: enabled
+    permanent: yes
+    immediate: yes
+
+- name: "print pubkey"
+  debug:
+    var: wg_pubkey.stdout

@@ -1,0 +1,14 @@
+[Interface]
+PrivateKey = {{ wg_key.stdout }}
+Address = 10.0.0.1/24
+ListenPort = 465
+SaveConfig = true
+
+[Peer]
+PublicKey = O00vX2z4O7RXULiK+Z83zoh3LPfpZCHkvQYYnLM8PQo=
+AllowedIPs = 10.0.0.2/32
+
+[Peer]
+PublicKey = iI/zqGInFNecAlvGON70adPt/c5W87gGWh3dEk4bq2E=
+AllowedIPs = 10.0.0.3/32
+#AllowedIPs = 0.0.0.0/0
