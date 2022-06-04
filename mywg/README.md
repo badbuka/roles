@@ -3,6 +3,13 @@ My wireguard
 
 Role that sets up wireguard VPN on RH8(Rocky, Alma, Oracle etc).
 
+### Variables
+```
+mywg_port: "465"            ## wireguard listen port
+mywg_subnet: "10.0.0.1/24"  ## wireguard subnet
+mywg_peers:                 ## list of peers to add
+  - { name: "", public_key: "O00vX2z4O7RXULiK+Z83zoh3LPfpZCHkvQYYnLM8PQo=", allowed_ips: "10.0.0.2/32" }
+```
 
 Example Playbook
 ----------------

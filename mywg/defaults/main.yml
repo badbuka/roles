@@ -1,0 +1,7 @@
+mywg_port: "465"
+mywg_subnet: "10.0.0.1/24"
+mywg_peers: 
+    - { name: "", public_key: "O00vX2z4O7RXULiK+Z83zoh3LPfpZCHkvQYYnLM8PQo=", allowed_ips: "10.0.0.2/32" }
+    - { name: "", public_key: "iI/zqGInFNecAlvGON70adPt/c5W87gGWh3dEk4bq2E=", allowed_ips: "10.0.0.3/32" }
+    - { name: "", public_key: "Fi84Pk1kMEXLXI8snApZZQVjvHN1NxNes47ySKFOuDQ=", allowed_ips: "10.0.0.4/32" }
+    - { name: "", public_key: "FPyRuvduv+TyJ9bFmMuwHX09hikv03tXfHm8LR9vPSw=", allowed_ips: "10.0.0.5/32" }
